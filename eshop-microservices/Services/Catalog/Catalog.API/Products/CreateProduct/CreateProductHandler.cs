@@ -23,10 +23,19 @@
             };
             //TODO
             //save the database 
-            session.Store(product);
-            await session.SaveChangesAsync(cancellationToken);
-            //return the result 
-            return new CreateProductResult(product.Id);
+            try
+            {
+                session.Store(product);
+                await session.SaveChangesAsync(cancellationToken);
+                //return the result 
+                return new CreateProductResult(product.Id);
+            }
+            catch (Exception ex )
+            {
+
+                throw;
+            }
+           
         }
     }
 }
