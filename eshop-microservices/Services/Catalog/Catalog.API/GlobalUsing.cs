@@ -6,3 +6,5 @@ global using Catalog.API.Models;
 global using Marten;
 global using Catalog.API.Exceptions;
 global using Catalog.API.Products.GetProducts;
+global using Marten.Linq.QueryHandlers;
+global using Marten.Pagination;
