@@ -4,33 +4,40 @@ services:
   catalogdb:
     container_name: catalogdb
     environment:
-       - POSTGRES_USER=postgres
-       - POSTGRES_PASSWORD=postgres
-       - POSTGRES_DB=CatalogDb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=CatalogDb
     restart: always
     ports:
-         - "5432:5432"
+        - "5433:5433"
     volumes:
-         - postgres_catalog:/var/lib/postgresql/data/ 
-
+      - postgres_catalog:/var/lib/postgresql/data/ 
+      
   basketdb:
     container_name: basketdb
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=1234
       - POSTGRES_DB=BasketDb
     restart: always
     ports:
-        - "5433:5432"
+        - "5433:5433"
     volumes:
       - postgres_basket:/var/lib/postgresql/data/ 
+
+  distributedcache:
+    container_name: distributedcache
+    restart: always
+    ports:
+      - "6379:6379"
+
 
   catalog.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
-      - ConnectionStrings__Database=Server=catalogdb;Port=5432;Database=CatalogDb;User Id=postgres;Password=postgres;Include Error Detail=true
+      - ConnectionStrings__Database=Server=catalogdb;Port=5433;Database=CatalogDb;User Id=postgres;Password=1234;Include Error Detail=true
     depends_on:
       - catalogdb
     ports:
@@ -45,17 +52,11 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
-      - ConnectionStrings__Database=Server=basketdb;Port=5432;Database=BasketDb;User Id=postgres;Password=postgres;Include Error Detail=true
+      - ConnectionStrings__Database=Server=basketdb;Port=5433;Database=BasketDb;User Id=postgres;Password=1234;Include Error Detail=true
       - ConnectionStrings__Redis=distributedcache:6379
-      - GrpcSettings__DiscountUrl=https://discount.grpc:8081
-      - MessageBroker__Host=amqp://ecommerce-mq:5672
-      - MessageBroker__UserName=guest
-      - MessageBroker__Password=guest
     depends_on:
       - basketdb
       - distributedcache
-      - discount.grpc
-      - messagebroker
     ports:
       - "6001:8080"
       - "6061:8081"
