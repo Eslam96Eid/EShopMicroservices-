@@ -1,6 +1,4 @@
-﻿using Catalog.API.Products.GetProductById;
-using FluentValidation;
-
+﻿
 namespace Catalog.API.Products.DeleteProduct;
 
 public record DeleteProductCommand(Guid Id) : ICommand<DeleteProductResult>;
